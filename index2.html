@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+
+</head>
+<body>
+  <div id="wrap">
+    <h1>DRF API TEST!</h1>
+    <div class="artists-container">
+      <h2>Artist List</h2>
+    </div>
+  </div>
+
+
+  <div id='template-artist'>
+    <span class="artist-melon-id"></span>
+    <span class="artist-name"></span>
+    <span class="profile-img"></span>
+    <span class="real-name"></span>
+    <span class="youtube"></span>
+  </div>
+
+
+  <script src="js/axios.js"></script>
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <!--  페이지 로드에 용이하기 위해 가장 밑에 둔다 -->
+  <script>
+  // API에 HTTP GET 요청
+      axios.get('http://localhost:8000/api/artist/')
+      .then(function(response) {
+        var artists = response.data.artists
+        // console.log(response.data);
+        for (var i = 0; i < artists.length; i++) {
+          var currentArtist = artists[i];
+          console.log(currentArtist);
+
+          var curArtistElement = $('#template-artist').clone();
+          curArtistElement.find('.artist-melon-id').text(currentArtist.melon_id);
+          curArtistElement.find('.artist-name').text(currentArtist.name);
+          curArtistElement.find('.profile-img').text(currentArtist.image);
+          curArtistElement.find('.real-name').text(currentArtist.real_name);
+          curArtistElement.find('.youtube').text(currentArtist.youtube_videos);
+          $('.artists-container').append(curArtistElement);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  </script>
+</body>
+</html>

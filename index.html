@@ -4,9 +4,110 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/index.css">
+  <title>Melon Front</title>
 </head>
 <body>
-  <h1>DRF API TEST!</h1>
+  <h1>Melon Front!</h1>
+  <p id="user-info" class="none"></p>
+
+
+
+  <form id='login' action="">
+    <label for="username">ID : </label>
+    <input id="username" name="username" type="text" placeholder="id를 입력해주세요">
+    <label for="password">ID : </label>
+    <input id="password" name="password" type="password" placeholder="pw를 입력해주세요">
+    <button id="btnLogin" class='btn'>login</button>
+  </form>
+
+  <a href="artist-list.html">아티스트 목록</a>
+
+  <script src="js/axios.js"></script>
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/cookie.js"></script>
+
+  <script>
+
+      var cookie = getCookie('token');
+      console.log(cookie);
+      var str = 'Token '+ cookie;
+      getUserInfo(cookie);
+
+      function getUserInfo(cookie) {
+        axios({
+          url:"http://localhost:8000/api/members/info/",
+          method:'get',
+          Headers: {
+            Authorization: str
+          },
+        }).then(function(response) {
+          console.log(response);
+        })
+      }
+  </script>
+
+  <script>
+  // var username = 'shsf';
+  // var password = 'whdals1208';
+
+  // getAuthToken(username, password);
+
+
+
+  // function loginToToken () {
+  //   var username = $('#username').value;
+  //   var password = $('#password').value;
+  //   getAuthToken (username,password);
+  // }
+
+  function getAuthToken (username, password) {
+    axios({
+      url: "http://localhost:8000/api/members/auth-token/",
+      method: 'post',
+      data: {
+        username: username,
+        password: password
+      },
+      // dataType:"json",
+
+      // success: function(response){
+      //    setCookie("token",response.token,7)
+      //  }
+    })
+    // .success(function(response){
+    //   setCookie("token", response.token , 7)
+    // })
+    .then(function (response){
+      // console.log(response.data.token);
+      var token = response.data.token;
+      var user = response.data.user;
+      setCookie("token", token , 7);
+
+
+      $('#user-info').text(user.username + '(으)로 로그인 중');
+      $('#user-info').removeClass('none');
+      $('#login').css("display", "none");
+    })
+    .catch(function(error){
+      // console.log(error);
+      console.log(error.response);
+    });
+  }
+
+  $('form#login').submit(function (event) {
+    var username = $('#username').val();
+    var password = $('#password').val();
+
+    getAuthToken(username,password);
+    $('#username').val('');
+    $('#password').val('');
+    event.preventDefault();
+  });
+
+
+
+  </script>
 </body>
 </html>
